@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: cookie-service
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeploy: true
+
+  - type: cron
+    name: keep-cookie-service-alive
+    env: node
+    schedule: "*/5 * * * *"  # a cada 5 minutos
+    command: curl -s -X GET $RENDER_SERVICE_URL -H "Cache-Control: no-cache"
